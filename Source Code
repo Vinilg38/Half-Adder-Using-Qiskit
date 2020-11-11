@@ -1,0 +1,25 @@
+#Define registers and a quantum circuit
+q = QuantumRegister(4)
+c = ClassicalRegister(2)
+qc = QuantumCircuit(q,c)
+
+#XOR
+qc.cx(q[1], q[2])
+qc.cx(q[0], q[2])
+qc.barrier()
+
+#AND
+qc.ccx(q[0], q[1], q[3])
+qc.barrier()
+
+#Sum
+qc.measure(q[2], c[0])
+#Carry out
+qc.measure(q[3], c[1])
+
+backend = Aer.get_backend('qasm_simulator')
+job = execute(qc, backend, shots=1000)
+result = job.result()
+count =result.get_counts()
+print(count)
+qc.draw(output='mpl')
